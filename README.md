@@ -17,9 +17,9 @@ For the analysis I have downloaded the data of almost 80000 music and 50000 movi
 
 ## Folders:
 
-**Download:** the series of perls scripts and packages that I used to scrape torrent datasheets. See link for more information about the methods.
+**Torrent_download:** the series of perls scripts and packages that I used to scrape torrent datasheets. See link for more information about the methods.
 
-**Music:** The data analysis of the music torrents. In these torrents I was focusing on the differences in the download preferences between hungarian and international music.
+**Music_torrent_analysis:** The data analysis of the music torrents. In the case of these torrents I was focusing on the differences in the download preferences between hungarian and international music.
 
 **Movies:** In this folder I have collected a series of graphs showing how download number of high definition movies increased recently indication the growing access to broadband internet in Hungary.
 
