@@ -60,8 +60,8 @@ SumTable <- function()
 
 `> SumTable(SubsetTable, "Nationality", "Downloaded")`
 
-| Factor | Number of<br />torrents | Number of<br />Downloads | Average Download | Median Download |
-|--|--|--|--|--|
+| Factor | Number of torrents | Number of Downloads | Average Download | Median Download |
+|--:|:--:|:--:|:--:|:--:|
 |  EN  |  47521  |  14926189  |  314.0967  |  89  |
 |  HU  |  9636  |  13256411  |  1375.717  |  689  |
 
