@@ -41,20 +41,40 @@ TorrentData           <- TorrentData[!is.na(TorrentData$Nationality),]
 ### Exploratory analysis
 
 To take a look at the dataset I was working with:
-```r
+```R
 > nrow(TorrentData)
 [1] 57160
 ```
 As the focus of this analysis will be on the number of downlads, nationality and the upload date, a new restricted dataset was created:
 
-```r
+```R
 SubsetTable             <- TorrentData[, c("U_Date", "Downloaded", "Nationality")]
 SubsetTable$U_Date      <- as.Date(SubsetTable$U_Date)
 SubsetTable$Downloaded  <- as.numeric(as.character(SubsetTable$Downloaded))
 SubsetTable$Nationality <- factor(SubsetTable$Nationality)
 
-# A small script, to generate a summary table:
-SumTable <- function()
+# A small script, to generate a summary table ready to paste into github markdown:
+SumTable <- function(df, fact, value){
+
+    # Check if the given names are exists:
+    if ((fact  %in% names(df)) == F){stop("Error:" ,fact, " named column does not exist in the provided dataframe!\nAvailable colum names: ", colnames(df))}
+    if ((value %in% names(df)) == F){stop("Error:" ,value, " named column does not exist in the provided dataframe!\nAvailable colum names: ", colnames(df))}
+    if (class(fact) != "factor"){stop("Error: The provided column is not a real factor!")}
+
+    # If everything lok ok, we can start to print out the table
+    cat("| Factor | Number of torrents | Number of Downloads | Average Download | Median Download |\n|:--:|:--:|:--:|:--:|:--:|\n")
+
+    factorlist <- names(table(df[,fact]))
+
+    for (i in factorlist){
+        Newlist <- df[df[,fact]==i,value] # Get the number of downloads corresponding to the given factor
+        NoTorrents <- length(Newlist)     # Get number of torrent in the selection
+        Downloads  <- sum(Newlist)        # Get total number of download of the selection
+        AverageDl  <- Downloads / NoTorrents  # Calculate the average download number
+        MedDl      <- median(Newlist)     # Median download number
+        cat("| ",i, " | ", NoTorrents, " | ", Downloads, " | ", AverageDl, " | ", MedDl, " | \n")
+    }
+}
 
 ```
 
