@@ -51,34 +51,12 @@ As the focus of this analysis will be on the number of downlads, nationality and
 SubsetTable             <- TorrentData[, c("U_Date", "Downloaded", "Nationality")]
 SubsetTable$U_Date      <- as.Date(SubsetTable$U_Date)
 SubsetTable$Downloaded  <- as.numeric(as.character(SubsetTable$Downloaded))
+SubsetTable             <- SubsetTable[SubsetTable$Nationality == 'EN' | SubsetTable$Nationality == 'HU',]
 SubsetTable$Nationality <- factor(SubsetTable$Nationality)
-
-# A small script, to generate a summary table ready to paste into github markdown:
-SumTable <- function(df, fact, value){
-
-    # Check if the given names are exists:
-    if ((fact  %in% names(df)) == F){stop("Error:" ,fact, " named column does not exist in the provided dataframe!\nAvailable colum names: ", colnames(df))}
-    if ((value %in% names(df)) == F){stop("Error:" ,value, " named column does not exist in the provided dataframe!\nAvailable colum names: ", colnames(df))}
-    if (class(fact) != "factor"){stop("Error: The provided column is not a real factor!")}
-
-    # If everything lok ok, we can start to print out the table
-    cat("| Factor | Number of torrents | Number of Downloads | Average Download | Median Download |\n|:--:|:--:|:--:|:--:|:--:|\n")
-
-    factorlist <- names(table(df[,fact]))
-
-    for (i in factorlist){
-        Newlist <- df[df[,fact]==i,value] # Get the number of downloads corresponding to the given factor
-        NoTorrents <- length(Newlist)     # Get number of torrent in the selection
-        Downloads  <- sum(Newlist)        # Get total number of download of the selection
-        AverageDl  <- Downloads / NoTorrents  # Calculate the average download number
-        MedDl      <- median(Newlist)     # Median download number
-        cat("| ",i, " | ", NoTorrents, " | ", Downloads, " | ", AverageDl, " | ", MedDl, " | \n")
-    }
-}
 
 ```
 
-`> SumTable(SubsetTable, "Nationality", "Downloaded")`
+`> SumTable(SubsetTable, "Nationality", "Downloaded") # Function is in the smallfunctions.R source file`
 
 | Factor | Number of torrents | Number of Downloads | Average Download | Median Download |
 |--:|:--:|:--:|:--:|:--:|
@@ -88,6 +66,17 @@ SumTable <- function(df, fact, value){
 
 ### Distribution of downloads
 
+As the table shows, the distribution of the downloads are extremely right-skewed, with a few very popular music and a lot of others with only a few downloads. This is exactly what we see on the boxplot:
+
+![Boxplot](http://www.kephost.com/images/2014/05/26/NatBoxplot.png)
+
+To test if the distribution of the number of downloads follows a lognormal distribution I have checked if the distribution of the logarithm of the downloads follows normal distribution using a normal QQ probability plot.
+
+For international music torrents:
+
+For Hungarian music torrents:
+
+As clearly visible, Hungarian torrents are far more popular than international. 
 
 
 ### Nationality based separation of the torrents
