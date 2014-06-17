@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=9" >
+
+<title>Ncore music genre analysis</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+</head>
+
+<body>
+<h1>Ncore music genre analysis</h1>
+
+<p>Earlier this year I saw an excellent google <a href="http://research.google.com/bigpicture/music/">visualization</a> showing which music genres are still popular from a given date. That graph shows that the poularity of modern rock and metal, my favourite genres, are shrinking. In a way this is not surprising, as today there are so many different genres for a very diverse audience, so unlike many blogs and sites commenting on that graph I am not pessimistic about the future of rock. Time will tell which of today&#39;s music deserves future&hellip;</p>
+
+<p>But on the other hand, I started to wonder what users on the biggest Hungarian torrent site are listening. What genres do they prefer? What set they can chose from? In this project, I analized the distribution of genres and the number of downloads of different genres. The task was difficult, as the genre field of the torrent data sheet is not strictly defined, it is up to the user to fill that upon uploading, or even they can omit at all. This yield an extremely diverse set of variable with over 2500 separate values.</p>
+
+<p><strong>The analysis can be divided into the following steps:</strong></p>
+
+<ol>
+<li><strong>Read and separate genre:</strong> the torrent data file is read by a Perl script, separates the genre fields (as more genres can be associated to one music torrent), and saves a new csv, where each row corresponds to one genre.</li>
+<li><strong>Clean genre list:</strong> it is up to the uploader of the torrent to assign a genre to the music, the assigned genres form a very heterogenous list with arbitrary definitions and typos. In this step I define a restricted genre list to cover music files as completely as possible.</li>
+<li><strong>Summarizing genre data:</strong> a dataframe is built, where each row represents one genre and the number of torrent file associated with that genre and the number how many times these torrets have been downloaded. An other column is also calculated showing the average download number of the torrents of that genre.</li>
+<li><strong>visualize trends and patterns:</strong> barplots shows which genres are more frequen among uploaded torrents and among the downloads. Treeplot shows the relative distribution of genres.</li>
+</ol>
+
+<h3>Step 1. Reading and separating genre information:</h3>
+
+<pre><code class="r"># call Perl script, save cvs (OK)
+system(&quot;perl Genre_reader.pl torrent_data_NoTitle.csv&quot;)
+
+# Reading csv file:
+raw_genres &lt;- read.csv(&quot;genres_raw.csv&quot;, header = T)
+</code></pre>
+
+<p>To get an idea how the genre set looks like, I preformed an exploratory analysis:</p>
+
+<pre><code class="r"># Get information about the diversity of the source data: Number of torrens
+# uncovered:
+AssignedGenres &lt;- nrow(raw_genres)
+
+# Number of definitions:
+raw_genre_difinitions &lt;- length(table(raw_genres$Genre))
+
+# Number of torrents:
+TorrentNumber &lt;- length(table(raw_genres$TorrentID))
+
+# Number of torrents without genre definitions;
+UnAssignedTorrents &lt;- nrow(raw_genres[raw_genres$Genre == &quot;Na&quot;, ])
+UnAssignedRatio &lt;- round(100 * UnAssignedTorrents/length(table(raw_genres$TorrentID)), 
+    2)
+
+cat(&quot;Number of torrent files:&quot;, TorrentNumber, &quot;\nNumber of assigned genres:&quot;, 
+    AssignedGenres, &quot;\nNumber of different genre definitions:&quot;, raw_genre_difinitions, 
+    &quot;\nNumber of torrents without genre definition:&quot;, UnAssignedTorrents, &quot;\nThat is&quot;, 
+    UnAssignedRatio, &quot;percent of the total torrent population.&quot;)
+</code></pre>
+
+<pre><code>## Number of torrent files: 70282 
+## Number of assigned genres: 142248 
+## Number of different genre definitions: 2279 
+## Number of torrents without genre definition: 2684 
+## That is 3.82 percent of the total torrent population.
+</code></pre>
+
+<p>According to the report uploaders have used more than 2200 different genre definitions to describe 73k music, and only 4% of the music were uploaded without genre annotation. </p>
+
+<h3>Step 2. Cleaning genre list:</h3>
+
+<p>To make the genre definition list more concise, I applied an iterative process where with the combination of Perl scripts and R commands, I filtered out the most frequently made typo-s and inconsistent defintions. In this process I selected the first 100 most commonly used genres and manually processed them to get rid of non meaningful words for example &#39;and&#39; as in some cases the following genres &ldquo;rock and roll&rdquo; and &ldquo;drum and bass&rdquo; are typed incorrectly and each word treated as separate genre definition. I also pooled closely related genres like &ldquo;nordic metal&rdquo; and &ldquo;viking metal&rdquo;. Then I repeated this process where newer and newer definitions come up to the top 100. At the end of the optimization process, I organized the most common genres into five main categories: &ldquo;rock&rdquo;, &ldquo;pop&rdquo;, &ldquo;hip-hop&rdquo;, &ldquo;electronic&rdquo; and &ldquo;other&rdquo;.</p>
+
+<h4>Step 2/a: initial dataset:</h4>
+
+<p>To characterize the homogeneity and representativeness of the definition set, I calculated the ratio of torrents represented by the most frequently used 100 genres:</p>
+
+<pre><code class="r"># make a table with the genres:
+genre_table &lt;- table(raw_genres$Genre)
+
+# sort table by value:
+genre_table &lt;- sort(genre_table, decreasing = T)
+
+# get top 100 genre:
+top100_genre &lt;- labels(genre_table[1:100])[[1]]
+cat(&quot;Most frequently used 100 genre definitions: &quot;, top100_genre)
+</code></pre>
+
+<pre><code>## Most frequently used 100 genre definitions:  rock house pop metal electronic trance dance hop techno progressive hip jazz psychedelic and alternative folk classical blues ost bass ambient drum psytrance punk hardcore tech disco hard 90s House deep dts 24bit new music world downtempo live age Metal 80s death soul dubstep funk Dance rap heavy Pop Rock indie Trance rhythm reggae power melodic country dub Electronic electro goa Techno Club thrash hdtracks gothic black symphonic hangosk%C3%B6nyv experimental latin Ambient italo minimal 70s europop soundtrack fullon industrial vocal hardstyle Disco club metalcore chillout breaks vinyl euro trip 60s post lounge Heavy celtic modern Progressive dark mulat%C3%B3s doom Downtempo
+</code></pre>
+
+<pre><code class="r">
+# the usage frequency of the top 100 genre:
+barplot(genre_table[1:100], names.arg = &quot;&quot;, xlab = &quot;genres&quot;, ylab = &quot;times a genre was used&quot;)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk cleaning_1"/> </p>
+
+<pre><code class="r">
+# representativeness of the top 100 genres among all genres
+Top100_genre_count &lt;- sum(genre_table[1:100])
+All_genre_count &lt;- sum(genre_table)
+Top100_genre_ratio &lt;- round(Top100_genre_count/All_genre_count * 100, digits = 1)
+cat(&quot;How represetative the TOP100 genres of the total genre list:&quot;, Top100_genre_ratio)
+</code></pre>
+
+<pre><code>## How represetative the TOP100 genres of the total genre list: 86
+</code></pre>
+
+<pre><code class="r">
+# Saving the TOP100 genres for further processing
+write(top100_genre, &quot;top100genres.txt&quot;, sep = &quot; &quot;)
+
+# get the number of torrents covered by the top 100 genre (external Perl
+# script):
+returned &lt;- system2(&quot;./Top100_representativeness.pl&quot;, stdout = TRUE)
+cat(returned)
+</code></pre>
+
+<pre><code>##  Total number of torrents tested: 70283 Number of torrents represented by the TOP100 genre list: 63947 (90%)
+</code></pre>
+
+<p>So the Top 100 definition quite well covers the dataset, though 100 definition is still too many and there are incosistentencies in the labeling. In the following section I show the result of the optimization</p>
+
+<h4>Step 2/b: optimized dataset:</h4>
+
+<p>At the end of the optimization there was 41 genre definitions that were grouped further into 5 main categories. </p>
+
+<pre><code class="r"># running the final Perl script that genereates a cleaned torrent ID list
+# with the cleaned genre
+system(&quot;perl Tag_cleaner.pl torrent_data_NoTitle.csv&quot;)
+CleanGenre &lt;- read.csv(&quot;genres_clean_final.csv&quot;, header = T)
+CleanGenre$ID &lt;- as.character(CleanGenre$ID)
+
+# characterize the final set:
+Genre_Table &lt;- table(CleanGenre$genre)
+ID_Table &lt;- table(CleanGenre$ID)
+cat(&quot;Number of genre definitions:&quot;, length(Genre_Table), &quot;\nNumber of torrents covered:&quot;, 
+    length(ID_Table), &quot;That is&quot;, round(length(ID_Table)/TorrentNumber * 100, 
+        1), &quot;percent of the total torrent population.\n There is&quot;, nrow(CleanGenre), 
+    &quot;assignemnts, that cover&quot;, round(nrow(CleanGenre)/AssignedGenres * 100, 
+        1), &quot;percent of the original assignments&quot;)
+</code></pre>
+
+<pre><code>## Number of genre definitions: 42 
+## Number of torrents covered: 67848 That is 96.5 percent of the total torrent population.
+##  There is 123745 assignemnts, that cover 87 percent of the original assignments
+</code></pre>
+
+<p>After the cleaning process, there were 42 genre definitions that describe the 96.5% of the total torrent population. This genre set</p>
+
+<h3>Step 3. Summarizing genre data:</h3>
+
+<p>Then the dataset is separated based on genre classes. Both the download number and the torrent count were splitted among assigned genres. (That means if a torrent is assigned with &#39;rock&#39; and &#39;pop&#39; both genres got 0.5 count and half of the downloads. In extreme cases, a single torrent has 15 assigned genres.)</p>
+
+<pre><code class="r"># Creating a restricted dataset to make the process quick, will be removed
+# in the final verision.
+CleanGenre_small &lt;- CleanGenre[1:5000, ]
+
+# Adding an extra column to the cleaned genre dataframe that contain how
+# many genres were assigned to a given torrent ID:
+Count &lt;- sapply(CleanGenre_small$ID, function(x) ID_Table[x], simplify = T)
+
+# To fill dataframe with torrent data at first the torrent datafile is
+# loaded:
+Torrent_df &lt;- read.csv(file = &quot;torrent_data_NoTitle.csv&quot;, header = T)
+
+# Formatting columns for handling:
+Torrent_df$Downloaded &lt;- as.numeric(as.character(Torrent_df$Downloaded))
+</code></pre>
+
+<pre><code>## Warning: NAs introduced by coercion
+</code></pre>
+
+<pre><code class="r">
+### Fill dataframe with download number:
+DownloadCount &lt;- sapply(CleanGenre_small$ID, function(x) Torrent_df[Torrent_df$TorrentID == 
+    x, &quot;Downloaded&quot;])
+
+# Extend genre dataframe with the previously calculated data (already
+# normalized to the number of assigned genres):
+CleanGenre_small$TorrentCount &lt;- 1/Count
+CleanGenre_small$Downloads &lt;- CleanGenre_small$TorrentCount * DownloadCount
+
+# Genre definitions in the cleaned dataset:
+genres &lt;- names(table(CleanGenre$genre))
+cat(genres)
+</code></pre>
+
+<pre><code>## alternative audiobook blues chillout/ambient classical comedy country dance dark-metal dark-rock dicso drum&#39;n&#39;bass dubstep electronic europop folk funk hardcore hip-hop house indie italo-disco jazz latin meditation mulatos musical nemzeti-rock ost pop psychedelic-rock psychedelic/acid/goa punk rap reggae rnb rock rock&#39;n&#39;roll soul swing synthpop trance/techno
+</code></pre>
+
+<pre><code class="r">categories &lt;- sapply(genres, function(x) CleanGenre[CleanGenre$genre == x, &quot;Category&quot;][1])
+
+# Combining all data into a single dataframe:
+GenreDf &lt;- data.frame(genres = genres, categories = categories)
+
+# calculate how many torrents belong to each genre definition:
+TorrentCount &lt;- sapply(GenreDf$genres, function(x) sum(CleanGenre_small[CleanGenre_small$genre == 
+    x, &quot;TorrentCount&quot;]))
+GenreDf$Count &lt;- TorrentCount
+
+# calculte how many downloads belong to each genre definition:
+TorrentDownloads &lt;- sapply(GenreDf$genres, function(x) sum(CleanGenre_small[CleanGenre_small$genre == 
+    x, &quot;Downloads&quot;]))
+GenreDf$Downloads &lt;- TorrentDownloads
+
+# Sorting dataframe based on category then based on torrent count:
+GenreDf &lt;- GenreDf[order(GenreDf[, &quot;categories&quot;], -GenreDf[, &quot;Count&quot;]), ]  # Sorting for count
+</code></pre>
+
+<h3>Step 4. Visualizing trends and patterns:</h3>
+
+<p>At first I wanted to visualize the relative frequencies of genres and downloads via a treeplot. To achieve this, the treeplot package was used. </p>
+
+<pre><code class="r"># At first we assign colors to each genre to get a nice color gradient (R
+# snipplet was developed for this task)
+source(&quot;coloring.R&quot;)
+GenreDf$colors &lt;- coloring(GenreDf, level_1 = &quot;categories&quot;, level_2 = &quot;genres&quot;, 
+    values = &quot;Count&quot;, scale = F)
+</code></pre>
+
+<pre><code>## 12345
+</code></pre>
+
+<pre><code class="r"># install.packages(&#39;treemap&#39;) library(&#39;treemap&#39;)
+
+treemap(GenreDf, index = c(&quot;categories&quot;, &quot;genres&quot;), vSize = &quot;Count&quot;, vColor = &quot;colors&quot;, 
+    type = &quot;color&quot;, title = &quot;Distribution of torrents&quot;, fontsize.title = 20, 
+    fontsize.labels = 14, force.print.labels = TRUE, drop.unused.levels = T, 
+    fontcolor.labels = &quot;black&quot;)
+</code></pre>
+
+<pre><code>## Error: could not find function &quot;treemap&quot;
+</code></pre>
+
+<p>&ldquo;</p>
+
+</body>
+
+</html>
+
