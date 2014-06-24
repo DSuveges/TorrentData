@@ -42,7 +42,7 @@ coloring <- function(df, level_1 = names(df)[1], level_2 = names(df)[2], values 
         if (scale == F){
 
             # the steepness of the gradient varies: number of steps are equal to the number of second levels 
-            palette_gradient <- colorRampPalette(c( base_colors[i],"#FFFFFF"))(nrow(df_level_1))
+            palette_gradient <- colorRampPalette(c("#FFFFFF", base_colors[i]))(nrow(df_level_1))
             
             # Assignment assumes the values of the second level is ordered
             color_vect       <- append(color_vect, palette_gradient) 
@@ -58,7 +58,7 @@ coloring <- function(df, level_1 = names(df)[1], level_2 = names(df)[2], values 
             extremes <- c(min(df_values), max(df_values))
 
             # Generating the color gradient. Always 200 steps:
-            palette_gradient <- colorRampPalette(c( base_colors[i],"#FFFFFF"))(201)
+            palette_gradient <- colorRampPalette(c( "#FFFFFF", base_colors[i]))(201)
             
             # Assignment is based on where is a particule value between the two extremes  
             for (value in df_values){

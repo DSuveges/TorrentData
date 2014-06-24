@@ -11,14 +11,15 @@ open(OUT,">", "genres_clean_final.csv");
 print OUT "ID,Category,genre\n";
 
 open(ERR, ">", "uncovered.csv");
-# Each line
-my $i = 0;
 
-my $Total_torrent        = 0;
-my $Missing_torrent      = 0;
-my $Missing_genre        = 0;
-my $With_genre           = 0;
-my $with_annotated_genre = 0;
+# Torrents to be counted:
+my $t_with_genre    = 0; # torrent that has at least one valid definition
+my $t_without_genre = 0; # Torrent without at least one valid definition
+
+# genres to be counted:
+my $g_non_covered   = 0; # genre that is not covered in the mask definition set
+my $g_non_valid     = 0; # genre that is covered, but not valid definition
+my $g_valid         = 0; # genre with valid mask definition
 
 # Input file is the atomic genre
 foreach (<>){
@@ -66,16 +67,37 @@ foreach (<>){
 
         my @genre_list = split(/[._]/, $genre);
 
+        # Counting genres not torrents!!!
         foreach my $g (@genre_list){
-            my ($new_g, $increment) = &genre_clean($g);
+
+            # new_g = masked genre
+            # flag  = (0, 1, 2)
+                # 0 -> non-defined genre -> printed out to file for further processing
+                # 1 -> covered and valid mask -> printed into file
+                # 2 -> covered but non-valid mask -> skipped and counted
+            my ($new_g, $flag) = &genre_clean($g);
+
+            if (EXPR) {
+                #code
+            }
+
+
             $flag += $increment;
+
+
             print OUT "$ID,$new_g\n" if ($increment == 1);
+
+
         }
 
-        $with_annotated_genre ++ if($flag != 0);
+        # Counting torrents not genres!!!
+        $with_annotated_genre ++ if ($flag == 1); # Annotated valid definition
+        $genre_skipped ++        if ($flag == 2); # Annotated non-valid definition
 
-        # If no accepted genre is provided:
-        print ERR "$_\n" if  ($flag == 0);
+        if ($flag == 0){; # Non-annotated definition
+            $genre_not_covered ++
+            print ERR "\n"
+        }
 
     }
     $i++;
@@ -83,11 +105,7 @@ foreach (<>){
 close OUT;
 close ERR;
 
-# print "\nTotal number of torrets: $Total_torrent\n";
-# print "Missing torrents: $Missing_torrent\n";
-# print "Torrents without covered genre definition: $Missing_genre\n";
-# print "Torrents with set genre field: $With_genre\n";
-# print "Torrents, with annotated genre field: $with_annotated_genre\n";
+
 
 
 
@@ -346,7 +364,7 @@ sub genre_clean {
         return ($hash{$genre}, 1);
     }
     elsif ($hash{$genre} && $hash{$genre} eq "xx"){
-        return ($genre, 0);
+        return ($genre, 2);
     }
     else {
         return ($genre, 0);

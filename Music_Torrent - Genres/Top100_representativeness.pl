@@ -52,6 +52,6 @@ foreach my $ID (keys %Torrents){
     }
 }
 
-print "\nTotal number of torrents tested: $Torrent_counter\n";
-print "Number of torrents represented by the TOP100 genre list: $Rep_counter (", int(100*$Rep_counter/$Torrent_counter), "%)\n"
+print "\nTotal number of torrents: $Torrent_counter\n";
+print "Number of torrents represented by the TOP100 genre list: $Rep_counter. (", int(100*$Rep_counter/$Torrent_counter), "%)\n"
 
