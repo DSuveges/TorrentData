@@ -118,14 +118,11 @@ If there is a gap between the IDs of two adjacent music torrent that could mean 
 
 #### We used the following method to calculate half life:
 
-1. We n number of music torrents that will be divided into subsequent set of k torrents
+1. The set number of music torrents will be divided into subsequent set of k torrents
 2. We define the frequency of still "living" music torrents within the subset: the number of torrents within the subset is divided by the number of total uploaded torrents within that period of time given by the difference between the first and the last torrent ID in the subset.
 3. We calculate the median age of the torrents within the group. (reference day is the upload date of the newest torrent)
-4. Plot ratio of living music torrents as a function of age. - I am expecting to see a decreasing point set that follows an exponential decay fashion.
+4. Plot ratio of living music torrents as a function of age. - I am expecting to see a set of point with a decreasing ratio and follows an exponential decay fashion.
 5. The parameters of the fitted exponential decay curve gives us the half-life of torrents.
-
-As we have 2 very distict population of music torrents: hungarian and international, we can take a look at if there is a
-
 
 ### Discussion
 
