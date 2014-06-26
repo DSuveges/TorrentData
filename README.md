@@ -11,17 +11,15 @@ The administrators of the site refused to provide the data directly, but allowed
 
 On the following image a randomly selected torrent page can be seen, with all the collected information marked.
 ![A datasheet of a random music torrent](http://kepfeltoltes.hu/140526/torrentdata_www.kepfeltoltes.hu_.jpg)
-The following information was saved in a csv file: torrent ID, the name of the torrent, the upload date and time, the number of how many times the torrent was downloaded, how many user is currently seeding and leeching the torrent, the genre and the nationality and the type (for movies, the IMDB identifier also saved is accessible).
+The following information was saved in a csv file: torrent ID, the name of the torrent, the upload date and time, the number of how many times the torrent was downloaded, how many user is currently seeding and leeching the torrent, the genre and the nationality and the type (for movies, the IMDB identifier also saved if it was available). I'm freely providing a modified dataset that does not have the titles to avoid copyright issues.
 
-For the analysis I have downloaded the data of almost 80000 music and 50000 movie torrent (not including series).
 
 ## Folders:
 
 **Torrent_download:** the series of perls scripts and packages that I used to scrape torrent datasheets. See link for more information about the methods.
 
-**Music_torrent_analysis:** The data analysis of the music torrents. In the case of these torrents I was focusing on the differences in the download preferences between hungarian and international music.
+**Music_torrent_analysis:** The data analysis of the music torrents. In the case of these torrents I was focusing on the differences in the download preferences between Hungarian and international music. And the user preferences for different genres.
 
-**Movies:** In this folder I have collected a series of graphs showing how download number of high definition movies increased recently indication the growing access to broadband internet in Hungary.
-
+**Movies:** The anaysis of movie torrents are still under development. I'm planning to
 
 

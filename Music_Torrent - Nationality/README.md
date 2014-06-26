@@ -3,9 +3,9 @@ Analysis of music torrents
 
 ## Motivation
 
-In this analysis I was originally interested in the characterization of the user preferences of a Hungarian torrent community. In this section I want to show if users are significantly biased based on the nationality of the music they download. It is often considered to be a big problem that the presence of international (mostly American) music is so overwhelming, that Hungarians are no longer interested in the national musicians' art.
+In this analysis, I wanted to characterize the user preferences of a Hungarian torrent community. In this section I will show that users are significantly biased based on the nationality of the music they download. It is often considered to be a big problem that the presence of international (mostly American) music is so overwhelming, that Hungarians are no longer interested in the national musicians' art. However, download data and the half-life of torrents show that users are likely prefer Hungarian music.
 
-However I used Perl to download torrent data, I decided to do the analysis in R/RStudio as it made the analyis much more easier and gave a excellent opportunity to familiarize myself with this language.
+However I used Perl to download torrent data, I decided to do the analysis in R/RStudio as it made the analyis much easier and gave a excellent opportunity to familiarize myself with this language.
 
 ## The data:
 
@@ -28,7 +28,6 @@ To download music torrent data form the the torrent tracker we used the download
 Once we have the data saved in the csv file, we can read it with the following R code, and keep it in the memory for all downstream analysis.
 
 ```R
-setwd("Documents/Programming/ncore_analysis/music/")
 TorrentData <- read.csv("torrent_data.csv")
 
 # cleaning data from non-defined values:
@@ -55,7 +54,7 @@ SubsetTable             <- SubsetTable[SubsetTable$Nationality == 'EN' | SubsetT
 SubsetTable$Nationality <- factor(SubsetTable$Nationality)
 
 ```
-
+`> source("smallfunctions.R")`
 `> SumTable(SubsetTable, "Nationality", "Downloaded") # Function is in the smallfunctions.R source file`
 
 | Factor | Number of torrents | Number of Downloads | Average Download | Median Download |
@@ -70,11 +69,25 @@ As the table shows, the distribution of the downloads are extremely right-skewed
 
 ![Boxplot](http://www.kephost.com/images/2014/05/26/NatBoxplot.png)
 
-To test if the distribution of the number of downloads follows a lognormal distribution I have checked if the distribution of the logarithm of the downloads follows normal distribution using a normal QQ probability plot.
+This extreme skewedness imply that the distribution of the number of downloads might follow a lognormal distribution. To test this hypothesis, I  checked if the distribution of the logarithm of the downloads follows normal distribution using a normal QQ probability plot.
 
 For international music torrents:
 
+```R
+source("Plots.R")
+tripleplot(TorrentData[ TorrentData$Nationality == "EN", "Downloaded"])
+```
+![Number of Download of international music](./EN_plots.png)
+
 For Hungarian music torrents:
+
+```R
+source("Plots.R")
+tripleplot(TorrentData[ TorrentData$Nationality == "HU", "Downloaded"])
+```
+![Number of Download of Hungarian music](./HU_plots.png)
+
+Graphs indicate that the download number of both categories follow a lognormal distribution, but the If we create a graph plotting the logarith
 
 As clearly visible, Hungarian torrents are far more popular than international. 
 

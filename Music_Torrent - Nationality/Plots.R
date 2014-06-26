@@ -42,6 +42,13 @@ tripleplot <- function(rawdata, filename="temp.pdf"){
 # PLot one: simple histogram
 RawHist <- function(vector){
 
+    # Testing if Arrows package is installed or not...
+    if("TeachingDemos" %in% rownames(installed.packages()) == FALSE) {install.packages("TeachingDemos")}
+    library(TeachingDemos)
+
+    if("shape" %in% rownames(installed.packages()) == FALSE) {install.packages("TeachingDemos")}
+    library(TeachingDemos)
+
     # At first let's remove zeroes
     vector <- vector[vector != 0]
 
@@ -118,7 +125,7 @@ LognormHist <- function(vector){
     plot (
         h,
         main = "Histogram of log values",
-        xlab = "log(Number of Dowloads)",
+        xlab = "log(Number of Downloads)",
         ylab = "Number of torrents",
         col  = rgb(1,0,0,0.5),
         ylim = c(0,max(h$count)*1.1)

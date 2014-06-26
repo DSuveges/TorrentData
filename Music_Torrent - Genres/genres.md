@@ -19,12 +19,12 @@ Upon downloading the torrent datasheet, every piece of information is saved into
 In the first step, the genre field of the csv file had to be separated into individual genres. As this process was really slow with R, I decided to use Perl. The suitable script saved each genre with the corresponding torrent ID into a new csv file, that could be read by R directly as a dataframe. The following example shows how this script worked:
 
 **input:**<br \>
-`1488270,5,1,2014-02-10,21:53:02,12,MP3,EN,house_dance_electronic`<br \>
+>1488270,5,1,2014-02-10,21:53:02,12,MP3,EN,house_dance_electronic`<br \>
 
 **output:**<br \>
-`1488270,house`<br \>
-`1488270,dance`<br \>
-`1488270,electronic`<br \>
+>1488270,house`<br \>
+>1488270,dance`<br \>
+>1488270,electronic`<br \>
 
 
 ```r
@@ -62,12 +62,14 @@ cat("Number of torrent files:", TorrentNumber, "\nNumber of assigned genres:",
 
 So uploaders used more than 2200 different genre definitions to describe 73000 music torents, luckily only 4% of the torrents were uploaded without genre annotation. 
 
-### Step 2. Cleaning genre list:
+### Step 2. Cleaning genre list
 
-To make the genre definition list more concise, I applied an iterative process where with the combination of Perl scripts and R commands, I constructed a genre mask that filtered out the most frequently made typo-s and inconsistent defintions. In this process I selected the first 100 most commonly used genres and manually processed them to get rid of non-meaningful words for example 'and' as in some cases the following genres "rock and roll" and "drum and bass" are typed incorrectly and each word treated as separate genre definition. I also pooled closely related genres like "nordic metal" and "viking metal". Then I repeated this process where newer and newer definitions come up to the top 100. 
+To make the genre definition list more concise, with the combination of Perl scripts and R commands, I constructed a genre mask set to fix the most frequently made typo-s and inconsistent defintions. In this process I selected the first 100 most commonly used genres and manually processed them to get rid of non-meaningful words and typos. I also pooled closely related genres like "nordic metal" and "viking metal". Then I repeated this process where newer and newer definitions come up to the top 100. 
 
-#### Step 2/a: initial dataset:
-To characterize the homogeneity and representativeness of the definition set, I calculated the ratio of torrents represented by the most frequently used 100 genres:
+#### Step 2/a: the most frequently used 100 genres
+
+To characterize the homogeneity and representativeness of the initial definition set, I calculated the ratio of torrents represented by the most frequently used 100 genres:
+
 
 ```r
 genre_table <- table(raw_genres$Genre)
@@ -97,13 +99,17 @@ cat("TOP100 genre definitions covers", Top100_genre_ratio, "percent of all genre
 ```
 
 ```r
-cat(returned)
+writeLines(returned)
 ```
 
 ```
-##  Total number of torrents tested: 70283 Number of torrents represented by the TOP100 genre list: 63947 (90%)
+## 
+## Total number of torrents: 70283
+## Number of torrents represented by the TOP100 genre list: 63947. (90%)
 ```
 
+
+The 100 most commonly used genres cover 90% of the total torrent population, and 86% of the total genre definition.
 
 Usage frequency of the top 100 genres:
 
@@ -114,60 +120,51 @@ barplot(genre_table[1:100], names.arg = "", xlab = "Genres", ylab = "Times a gen
 ![plot of chunk fig](figure/fig.png) 
 
 
-The graph shows that there are only a few very frequently used genres, and most genres in the Top100 are already quite rare. So the Top 100 definition quite well covers the dataset, though 100 definition is still too many and there are incosistentencies in the labeling. In the following section I show the result of the optimization.
+The graph shows that there are only a few very frequently used genres, and most genres in the Top100 are already quite rare. So the Top 100 definition quite well covers the dataset, though 100 definition is still too many to visualize and it also has incosistentencies. In the following section I show the result of the optimization.
 
 #### Step 2/b: optimized dataset:
 
-At the end of the optimization, I have developed a genre mask with 203 entries that restricted the genre set to only 42 genre definitions (see: mask_definitions.txt and Tag_cleaner.pl) that were grouped into five categories: "rock", "electronic", "pop", "hip-hop", "other".
+I have developed a genre mask the fixed most commonly occuring typos, omitted non-real genre definitions ("192kb", "80s", "live" etc.). At the end of the optimization, I have developed a genre mask with 203 entries that restricted the genre set to only 42 definitions (see: mask_definitions.txt and Tag_cleaner.pl) that were grouped into five categories: "rock", "electronic", "pop", "hip-hop", "other".
+
+__The list of the final genre definitions:__
+* __Electronic:__ "dubstep" "chillout/ambient" "drum'n'bass" "electronic" "psychedelic/acid/goa" "house" "trance/techno" 
+* __Hip-hop:__ "rnb" "funk" "rap" "hip-hop" 
+* __Other:__ "musical" "swing" "meditation" "mulatos" "latin" "comedy" "soul" "reggae" "country" "ost" "audiobook" "blues" "jazz" "classical" "folk" 
+* __Pop:__ "italo-disco" "indie" "synthpop" "dicso" "europop" "dance" "pop" 
+* __rock:__ "nemzeti-rock" "rock'n'roll" "psychedelic-rock" "alternative" "punk" "dark-metal" "hardcore" "dark-rock" "rock" 
 
 
 ```r
 # running the final Perl script that genereates a cleaned torrent ID list
 # with the cleaned genre
-system("perl Tag_cleaner.pl torrent_data_NoTitle.csv")
+report <- system2("./Tag_cleaner.pl", args = c("torrent_data_NoTitle.csv"), 
+    stdout = TRUE)
+writeLines(report)
+```
+
+```
+## Non-covered genres: 7939 (5%)
+## Covered, but non-valid genres: 13659 (9%)
+## Valid genres: 123745 (85%)
+## Torrents with at least one valid genre mask: 67852 (92%)
+```
+
+```r
+
 CleanGenre <- read.csv("genres_clean_final.csv", header = T)
-CleanGenre$ID <- as.character(CleanGenre$ID)
 ```
 
 
-Let's show a list of the final genre definitions: 
+According to the report, most of the genre definitions are masked (95%) and most of the masked genres (85%) were associated to any of the valid genre definitions. The valid genre definitions efficiently cover the torrent population, where 92% of torrent files has at least one associated genre definition.
 
 
 ```r
-# The final set:
-for (categorie in levels(GenreDf$categories)) {
-    cat(categorie, ": ")
-    cat(shQuote(as.character(GenreDf[GenreDf$categories == categorie, "genres"]), 
-        type = "cmd"), "\n")
-}
+genre_table <- sort(table(CleanGenre$genre), decreasing = T)
+barplot(genre_table, names.arg = "", xlab = "cleaned genre definitions", ylab = "Times a genre was used")
 ```
 
-```
-## Error: object 'GenreDf' not found
-```
+![plot of chunk pooled](figure/pooled.png) 
 
-
-Characterization of the optimized genre set:
-
-```r
-# characterize the final set:
-Genre_Table <- table(CleanGenre$genre)
-ID_Table <- table(CleanGenre$ID)
-cat("Number of genre definitions:", length(Genre_Table), "\nNumber of torrents covered:", 
-    length(ID_Table), "That is", round(length(ID_Table)/TorrentNumber * 100, 
-        1), "percent of the total torrent population.\n There is", nrow(CleanGenre), 
-    "assignemnts, that cover", round(nrow(CleanGenre)/AssignedGenres * 100, 
-        1), "percent of the original assignments")
-```
-
-```
-## Number of genre definitions: 42 
-## Number of torrents covered: 67848 That is 96.5 percent of the total torrent population.
-##  There is 123745 assignemnts, that cover 87 percent of the original assignments
-```
-
-
-After the cleaning process, there were 42 genre definitions that describe the 96.5% of the total torrent population.
 
 ### Step 3. Summarizing genre data:
 
@@ -176,58 +173,51 @@ Summaraizing the number of torrents belonging different genres and the correspon
 
 ```r
 # Creating a restricted dataset to make the process quick, will be removed
-# in the final verision.
-CleanGenre_small <- CleanGenre[1:5000, ]
+# in the final verision.  CleanGenre_small <- CleanGenre[1:5000, ]
 
 # Adding an extra column to the cleaned genre dataframe that contain how
 # many genres were assigned to a given torrent ID:
-Count <- sapply(CleanGenre_small$ID, function(x) ID_Table[x], simplify = T)
-
-# To fill dataframe with torrent data at first the torrent datafile is
-# loaded:
-Torrent_df <- read.csv(file = "torrent_data_NoTitle.csv", header = T)
-
-# Formatting columns for handling:
-Torrent_df$Downloaded <- as.numeric(as.character(Torrent_df$Downloaded))
+CleanGenre <- read.csv("genres_clean_final.csv", header = T)
+ID_Table <- table(CleanGenre$ID)
+system.time(Count <- sapply(as.character(CleanGenre$ID), function(x) ID_Table[x]))
 ```
 
 ```
-## Warning: NAs introduced by coercion
+##    user  system elapsed 
+## 582.915   1.735 585.580
 ```
 
 ```r
 
+# To fill dataframe with torrent data -> at first the torrent datafile is
+# loaded:
+Torrent_df <- read.csv(file = "torrent_data_NoTitle.csv", header = T)
+Torrent_df <- Torrent_df[!is.na(Torrent_df$TorrentID), ]
+Torrent_df$Downloaded <- as.numeric(as.character(Torrent_df$Downloaded))  # set download number numeric
+
 ### Fill dataframe with download number:
-DownloadCount <- sapply(CleanGenre_small$ID, function(x) Torrent_df[Torrent_df$TorrentID == 
-    x, "Downloaded"])
+DownloadCount <- sapply(CleanGenre$ID, function(x) Torrent_df[Torrent_df$TorrentID == 
+    x, "Downloaded"][1])
 
 # Extend genre dataframe with the previously calculated data (already
 # normalized to the number of assigned genres):
-CleanGenre_small$TorrentCount <- 1/Count
-CleanGenre_small$Downloads <- CleanGenre_small$TorrentCount * DownloadCount
+CleanGenre$TorrentCount <- 1/Count
+CleanGenre$Downloads <- CleanGenre$TorrentCount * DownloadCount
 
 # Genre definitions in the cleaned dataset:
 genres <- names(table(CleanGenre$genre))
-cat(genres)
-```
-
-```
-## alternative audiobook blues chillout/ambient classical comedy country dance dark-metal dark-rock dicso drum'n'bass dubstep electronic europop folk funk hardcore hip-hop house indie italo-disco jazz latin meditation mulatos musical nemzeti-rock ost pop psychedelic-rock psychedelic/acid/goa punk rap reggae rnb rock rock'n'roll soul swing synthpop trance/techno
-```
-
-```r
 categories <- sapply(genres, function(x) CleanGenre[CleanGenre$genre == x, "Category"][1])
 
 # Combining all data into a single dataframe:
 GenreDf <- data.frame(genres = genres, categories = categories)
 
 # calculate how many torrents belong to each genre definition:
-TorrentCount <- sapply(GenreDf$genres, function(x) sum(CleanGenre_small[CleanGenre_small$genre == 
+TorrentCount <- sapply(GenreDf$genres, function(x) sum(CleanGenre[CleanGenre$genre == 
     x, "TorrentCount"]))
 GenreDf$Count <- TorrentCount
 
 # calculte how many downloads belong to each genre definition:
-TorrentDownloads <- sapply(GenreDf$genres, function(x) sum(CleanGenre_small[CleanGenre_small$genre == 
+TorrentDownloads <- sapply(GenreDf$genres, function(x) sum(CleanGenre[CleanGenre$genre == 
     x, "Downloads"]))
 GenreDf$Downloads <- TorrentDownloads
 
@@ -241,7 +231,9 @@ GenreDf <- GenreDf[order(GenreDf[, "categories"], GenreDf[, "Count"]), ]  # Sort
 
 ### Step 4. Visualization and discussion:
 
-Before visualizing the summaries, 
+Before visualizing the summary, we assign colors to each genre that makes it easier to identify them on various graphs. There are base colors that are selected for categories then color gradient is generated from the base color to white based on the count of the given genre. (In the coloring function I have implemented a scaled coloring method where the intensity of the assigned color depends on the relative count value. In this case this method is not applicable as generally there is one or two large value with strong color, and a lot of small values with very faint colors.)
+
+
 
 ```r
 # At first we assign colors to each genre to get a nice color gradient (R
@@ -252,10 +244,11 @@ GenreDf$colors <- coloring(GenreDf, level_1 = "categories", level_2 = "genres",
 ```
 
 
-To get a rather quanlitative overview of how the number of torrents are distributed among main categories and further genres, I used **treemap** that is an area based visualization where the area of a category (*leaf*) is proportional to its relative value. This visualization allows a hierarchical representation where subbranched categories are 
+To get a qualitative overview of the torrent distribution among main categories and further genres, I used **treemap** which is especially useful to visualize hierarchical data, where the area of a category (*leaf*) is proportional to its relative value, and these areas are further grouped . This visualization allows a hierarchical representation where subbranched categories are 
 
 
 To visualize the realtive distribution of different music categories and genres within categories, I created a treemap:
+
 
 ```r
 # the treemap visualization requires "treemap" package to be installed:
@@ -278,7 +271,57 @@ treemap(
 )
 ```
 
-![plot of chunk treemap](figure/treemap.png) 
+![plot of chunk treemap_count](figure/treemap_count.png) 
+
+
+The visualization of the absolute download number gives an idea about the popularity of genres.
+
+
+```r
+#  :
+treemap(
+    GenreDf,            # dataframe with the data to plot
+    index  = c("categories","genres"),  # The nested categories
+    vSize  = "Downloads",   # The values that determine the size of the rectangles
+    type   = "color",   # Coloring method: use pre-defined colors
+    vColor = "colors",  # Column name with color definitions
+    title  = "Downloads", 
+    fontsize.title     = 20, 
+    fontsize.labels    = 14,
+    force.print.labels = TRUE,
+    drop.unused.levels = T,
+    fontcolor.labels   = "black"
+)
+```
+
+![plot of chunk treemap_download](figure/treemap_download.png) 
+
+
+This visulaization already indicates that the highest number of torrents not necessarely yields the highest number of downloads. There are genres that has more downloads although has lower number of torrents. To further amplify these differences, the average download number of a given genre was plotted (though this is not really fits to the scheme of the treemap visualization).
+
+
+```r
+#  :
+treemap(
+    GenreDf,            # dataframe with the data to plot
+    index  = c("categories","genres"),  # The nested categories
+    vSize  = "averageDownloads",   # The values that determine the size of the rectangles
+    type   = "color",   # Coloring method: use pre-defined colors
+    vColor = "colors",  # Column name with color definitions
+    title  = "Normalized downloads", 
+    fontsize.title     = 20, 
+    fontsize.labels    = 14,
+    force.print.labels = TRUE,
+    drop.unused.levels = T,
+    fontcolor.labels   = "black"
+)
+```
+
+![plot of chunk treemap_average](figure/treemap_average.png) 
+
+
+Some really interesting trends are visible on the last graph: there are some genres (usually representeb by a rather low number  torrents) that have a high average download number. 
+
 
 To get a really comparative view of the genre usage, I created a barchart:
 

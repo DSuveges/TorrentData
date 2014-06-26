@@ -3,6 +3,13 @@
 # After the iterative process, we have the following genre definitions, to cover as much torrents as possible
 # The program also keep track how
 
+# version: 2.0 Last modified: 2014.06.23 Daniel Suveges
+    # processes the downloaded torrent datasheet (in cvs file)
+    # applies genre mask
+    # saves non covered genres
+    # saves covered genres with torrent IDs
+    # creates report.
+
 
 use strict;
 use warnings;
@@ -13,6 +20,7 @@ print OUT "ID,Category,genre\n";
 open(ERR, ">", "uncovered.csv");
 
 # Torrents to be counted:
+my $t_missing_genre = 0; # torrent that does not have any genre definition
 my $t_with_genre    = 0; # torrent that has at least one valid definition
 my $t_without_genre = 0; # Torrent without at least one valid definition
 
@@ -24,26 +32,15 @@ my $g_valid         = 0; # genre with valid mask definition
 # Input file is the atomic genre
 foreach (<>){
 
-    # Ignore empty lines at the end
+    # Pre process each lines to get rid of white spaces
     unless($_ =~ /^\d+/){next}
-
     $_=~ s/\s//g;
 
-    # Total number of torrent:
-    $Total_torrent++;
-
-    # This will keep track if the song has at least one valid genre field
-    my %hash = ();
-
-    # Keep track of the processing:
-    # print "Reading $i line\r";
-
-    # SElect each field of the csv file:
+    # splitting csv file into fields:
     my @sor = split(/,/,$_);
 
-    # If the torrent is missing:
+    # If the torrent data is missing (has torrent ID, but does not have any data because of deletion):
     if ($sor[1] eq "NA") {
-        $Missing_torrent++;
         next;
     }
 
@@ -52,19 +49,19 @@ foreach (<>){
     my $ID    = $sor[0];
     my $genre = $sor[8];
 
-    # Disect genre if, exists:
+    # next if there is no genre definition:
     if ($genre eq "NA"){
-        $Missing_genre++;
+        $t_missing_genre++;
         next;
     }
 
     # Genre field is set:
     else{
-        $With_genre++;
-        
-        # If at least one genre is covered by the canonical list, the flag will increase
-        my $flag = 0;
 
+        # keeping track if a torrent has at least one valid, covered torrent:
+        my $torrent_fag = 0;
+
+        # Splitting genre field into individual genres (separated by dot or underscore)
         my @genre_list = split(/[._]/, $genre);
 
         # Counting genres not torrents!!!
@@ -77,38 +74,56 @@ foreach (<>){
                 # 2 -> covered but non-valid mask -> skipped and counted
             my ($new_g, $flag) = &genre_clean($g);
 
-            if (EXPR) {
-                #code
+            # genre is not covered by the mask
+            if ($flag == 0) {
+                $g_non_covered ++;
+                print ERR "$g\n"; # for further optimization saving non covered genres
             }
 
+            # genre is covered but not a valid genre:
+            if ($flag == 2) {
+                $g_non_valid ++;
+            }
 
-            $flag += $increment;
-
-
-            print OUT "$ID,$new_g\n" if ($increment == 1);
-
-
+            # genre is covered and is a valid genre definition:
+            if ($flag == 1) {
+                $g_valid++;
+                print OUT "$ID,$new_g\n"; # Saving masked genre and torrent ID
+                $torrent_fag ++;          # tagging covered torrent
+            }
         }
 
         # Counting torrents not genres!!!
-        $with_annotated_genre ++ if ($flag == 1); # Annotated valid definition
-        $genre_skipped ++        if ($flag == 2); # Annotated non-valid definition
+        if ($torrent_fag == 0) {
+            $t_missing_genre ++; # none of the genres are valid
+        }
 
-        if ($flag == 0){; # Non-annotated definition
-            $genre_not_covered ++
-            print ERR "\n"
+        if ($torrent_fag != 0) {
+            $t_with_genre ++; # at least one of the genes is valid
         }
 
     }
-    $i++;
 }
 close OUT;
 close ERR;
 
+# Generating the report of the efficiency of the masking:
+my $t_total = $t_with_genre + $t_missing_genre + $t_without_genre;
+my $g_total = $g_non_valid + $g_non_covered + $g_valid;
+
+my $t_without_genre_frac = int( 100 * $t_without_genre / $t_total);
+my $t_with_genre_frac    = int( 100 * $t_with_genre / $t_total);
+my $t_missing_genre_frac = int( 100 * $t_missing_genre / $t_total);
+
+my $g_non_covered_frac   = int( 100 * $g_non_covered / $g_total);
+my $g_valid_frac         = int( 100 * $g_valid / $g_total);
+my $g_non_valid_frac     = int( 100 * $g_non_valid / $g_total);
+
+print "Non-covered genres: $g_non_covered ($g_non_covered_frac%)\nCovered, but non-valid genres: $g_non_valid ($g_non_valid_frac%)\nValid genres: $g_valid ($g_valid_frac%)\n";
+print "Torrents with at least one valid genre mask: $t_with_genre ($t_with_genre_frac%)\n";
 
 
-
-
+# this subroutine applies a mask on a selected set of genre definitions.
 sub genre_clean {
     my $genre = lc($_[0]);
     
@@ -251,7 +266,7 @@ sub genre_clean {
         "jpop"      => "Pop,pop",
 
         "disco"     => "Pop,disco",
-        "disco"     => "Pop,dicso",
+        "disco"     => "Pop,disco",
 
         "dance"     => "Pop,dance",
 
@@ -360,12 +375,17 @@ sub genre_clean {
         "villasbela"        => "xx",
     );
 
+    # covered definition and valid genre
     if ($hash{$genre} && $hash{$genre} ne "xx") {
         return ($hash{$genre}, 1);
     }
+
+    # covered, but non valid genre
     elsif ($hash{$genre} && $hash{$genre} eq "xx"){
         return ($genre, 2);
     }
+
+    # not covered
     else {
         return ($genre, 0);
     }
