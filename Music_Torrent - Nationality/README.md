@@ -87,13 +87,46 @@ tripleplot(TorrentData[ TorrentData$Nationality == "HU", "Downloaded"])
 ```
 ![Number of Download of Hungarian music](./HU_plots.png)
 
-Graphs indicate that the download number of both categories follow a lognormal distribution, but the If we create a graph plotting the logarith
+Graphs indicate that the download number of both categories follow a lognormal distribution. To make the difference more visible, the overlay of the two histograms of the logarythmic values were plot:
 
-As clearly visible, Hungarian torrents are far more popular than international. 
+```R
+Log_EN <- log(TorrentData[ TorrentData$Nationality == "EN", "Downloaded"])
+Log_HU <- log(TorrentData[ TorrentData$Nationality == "HU", "Downloaded"])
+
+source("Dualhist.R")
+PlotDualHist(vector1=Log_EN, vector2=Log_HU, filename="dualhist")
+```
+![Overlayed histograms of the log(download) values](./dualhist.png)
 
 
-### Nationality based separation of the torrents
+### Half life of music torrents
+
+Torrents over time lose their popularity. Sooner or later no one will download and after a while, seeders will also disconect and the finally the torrent will be completely abandoned. The administrators of the torrent tracker deletes these inactive or so called dead torrents. The aim of this analysis was to calculate the "half-life"  of Hungarian and international music torrents, as besides the download number, the halflife of torrents could also be informative about the popularity.
+
+#### Theory behind the half life calculation:
+
+Calculation of the half-life is not easy as the type of the dataset is a result of an observational study and represents only a snapshot from the life of the torrent tracker. What makes it possible to do this calculation is the fact that the torrent IDs are increasing with 1 with every torrent. The difference between two torrent IDs means how many other torrents were uploaded between those two torrents.
+
+If there is a gap between the IDs of two adjacent music torrent that could mean two things:
+1. There were other type of torrents (application, movie, e-book etc.) uploaded between them.
+2. There could be an other music as well, but that torrent could be deleted over time.
+
+**The half-life calculation based on the following assumption:**
+* The frequency of music torrents within the total torrent population was roughly the same over time.
+* "Natural" cause of torrent death: only insignificant amount of torrents are deleted due to violation of rules.
+* The rate of new torrent release is not have to be constant.
+
+#### We used the following method to calculate half life:
+
+1. We n number of music torrents that will be divided into subsequent set of k torrents
+2. We define the frequency of still "living" music torrents within the subset: the number of torrents within the subset is divided by the number of total uploaded torrents within that period of time given by the difference between the first and the last torrent ID in the subset.
+3. We calculate the median age of the torrents within the group. (reference day is the upload date of the newest torrent)
+4. Plot ratio of living music torrents as a function of age. - I am expecting to see a decreasing point set that follows an exponential decay fashion.
+5. The parameters of the fitted exponential decay curve gives us the half-life of torrents.
+
+As we have 2 very distict population of music torrents: hungarian and international, we can take a look at if there is a
 
 
+### Discussion
 
-###
+
