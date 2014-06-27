@@ -56,7 +56,7 @@ par(mfrow=c(1,2))
 
 # Plotting interantional data
 plot(halflife_EN$TorrentAge, halflife_EN$Ratio, 
-     main="International music torrents", 
+     main="English music torrents", 
      xlab="Age of torrent [days]", 
      ylab="Ratio of living torrents",
      col=rgb(0,0,1,0.5)

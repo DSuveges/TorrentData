@@ -72,7 +72,7 @@ This extreme skewedness implies that the distribution of the number of downloads
 * Fitting normal distribution to obtain the mean and the variance.
 * To test how well the data follows the normal distribution, a normal QQ probability plot was used.
 
-**For international music torrents:**
+**For English music torrents:**
 
 ```R
 source("Plots.R")
@@ -88,7 +88,7 @@ tripleplot(TorrentData[ TorrentData$Nationality == "HU", "Downloaded"])
 ```
 ![Number of Download of Hungarian music](./HU_plots.png)
 
-Graphs indicate that the download number of both categories follow a lognormal distribution. To make the difference more visible, the overlay of the two histograms of the logarythmic values were plot:
+Graphs indicate that the download number of both categories follow a lognormal distribution. To better visualize the comparison between the two distributions, the overlay of the two logarithmic histograms were plotted:
 
 ```R
 Log_EN <- log(TorrentData[ TorrentData$Nationality == "EN", "Downloaded"])
@@ -99,41 +99,42 @@ PlotDualHist(vector1=Log_EN, vector2=Log_HU, filename="dualhist")
 ```
 ![Overlayed histograms of the log(download) values](./dualhist.png)
 
+Taken together, I have shown that there is a significant preference for Hungarian music among torrents.
 
 ### Half life of music torrents
 
-Torrents over time lose their popularity. Sooner or later, no one will download and after a while, seeders will also disconect so finally, the torrent will be completely abandoned. The administrators of the torrent tracker deletes these inactive or so called "dead" torrents. The aim of this analysis was to calculate the "half-life"  of Hungarian and international music torrents, as besides the download number, the halflife of torrents could also be informative about the popularity.
+Torrents over time lose their popularity. Sooner or later, no one will download, and after a while, seeders will also disconect, so finally, the torrent will be completely abandoned. The administrators of the torrent tracker delete these inactive or so called "dead" torrents. The aim of this analysis was to calculate the "half-life"  of Hungarian and English music torrents, as besides the download number, the halflife of torrents could also be informative about the popularity.
 
 #### Theory behind the half life calculation:
 
-Calculation of the half-life is not easy as the type of the dataset is a result of an observational study and represents only a snapshot from the life of the torrent tracker. What makes it possible to do this calculation is the fact that the torrent IDs are increasing with 1 with every torrent. The difference between two torrent IDs means how many other torrents were uploaded between those two torrents.
+Calculation of the half life is not easy as the available data represents only a snapshot from the life of the torrent tracker. What makes it possible to do this calculation is the fact that the torrent IDs are increasing with 1 with every new torrent added. The difference between two torrent IDs gives the number of torrents uploaded between those two torrents.
 
-If there is a gap between the IDs of two adjacent music torrent that could mean two things:
+If there is a gap between the IDs of two adjacent music torrents that could mean two things:
 1. There were other type of torrents (application, movie, e-book etc.) uploaded between them.
-2. There could be an other music as well, but that torrent could be deleted over time.
+2. There was a music torrent in between, but was deleted over time.
 
-**The half-life calculation based on the following assumption:**
+**The half-life calculation is based on the following assumptions:**
 * The frequency of music torrents within the total torrent population was roughly the same over time.
-* "Natural" cause of torrent death: only insignificant amount of torrents are deleted due to violation of rules.
-* Though the rate of new torrent release is not have to be constant, the user activity is expected to be approximately even over time.
+* Torrents die because there are no downloaders, and only insignificant amount of torrents are deleted due to violation of rules.
+* Though the rate of new torrent release does not have to be constant, user activity is expected to be relatively constant over time.
 
-#### We used the following method to calculate half life:
+#### I used the following method to calculate half life:
 
-1. Torrents are divided into smaller sized groups (500 torrents/groups)
-2. **We calulate the frequency of still "living" music torrents within the subset:** the number of torrents within the subset is divided by the difference between the first and the last torrent ID in the subset (that corresponds to the number of total uploaded torrents during that period).
-3. We calculate the median age of the torrents within the group. (reference day is the upload date of the newest torrent)
-4. **Plot frequence of living torrents as a function of age** - I am expecting to see a set of point with a decreasing value that follows an exponential decay fashion.
+1. Torrents are divided into smaller groups (500 torrents/groups)
+2. **Calulate the frequency of still "live" music torrents within the subset:** the number of torrents within the subset is divided by the difference between the first and the last torrent ID in the subset (that corresponds to the number of total uploaded torrents during that period).
+3. Calculate the median age of the torrents within the group (reference day is the upload date of the newest torrent).
+4. **Plot frequency of live torrents as a function of age** - I'm expecting to see an exponential decay.
 5. The parameters of the fitted exponential decay curve gives us the *decay constant*. Then ln(2) divided by the decay constant gives the half-life (t1/2) of torrents.
 
-The detailed list of command used for the analysis are listed in the file `HalfLifeCalculations.R`, the custom functions used during the calculations are in `half-life.R` file.
+The detailed list of commands used for the analysis are listed in the file `HalfLifeCalculations.R`, custom functions used are in the `HalfLifeFunctions.R` file.
 
 ![Half life calculations](./halflife.png)
 
-Based on the fitted exponentials, the half-life of torrent files of international music is little less than a year, torrents of Hungarian music lives approximately 20 times longer. Unfortunately the estimation of half-life of Hungarian music is less reliable caused by the much lower number of torrents.
+Based on the fitted exponentials, the half-life of torrent files of English music is little less than a year, while torrents of Hungarian music live approximately 20 times longer. However, it is important to note, that the estimation of the half-life of Hungarian music is less reliable caused by the much smaller number of torrents.
 
 ### Discussion
 
-Though international music seems to be really overwhelming that is reflected by the higher number torrent files as well, peolpe has a bias towards for Hungarian music, which is indicated by the significantly higher download rate and the longer lifetime of torrent files.
+At first sight, it might seem that English music is dominant among torrents, suggested by the higher number of torrent files as well. However, my analysis revealed that there is a clear bias towards Hungarian music, which is indicated by the significantly higher download numbers and the longer lifetime of torrent files.
 
-But at the same time, I had to mention that the legal online sources of Hungarian musics are not as well developed as for internationals, directing potential buyers towards the illegal sources like bittorrent. This is especially true for older pieces that are completely impossible to obtain from ANY legal sources except from flea markets or online auctions of used items.
+But at the same time, I have to mention that legal online sources of Hungarian music are not as well developed as for Engish, directing potential buyers towards illegal sources like bittorrent. This is especially true for older pieces that are practically impossible to obtain from ANY legal source except from flea markets or online auctions of used items.
 
