@@ -78,7 +78,7 @@ This extreme skewedness implies that the distribution of the number of downloads
 source("Plots.R")
 tripleplot(TorrentData[ TorrentData$Nationality == "EN", "Downloaded"])
 ```
-![Number of Download of international music](./EN_plots.png)
+![Number of Download of international music](./figures/EN_plots.png)
 
 **For Hungarian music torrents:**
 
@@ -86,7 +86,7 @@ tripleplot(TorrentData[ TorrentData$Nationality == "EN", "Downloaded"])
 source("Plots.R")
 tripleplot(TorrentData[ TorrentData$Nationality == "HU", "Downloaded"])
 ```
-![Number of Download of Hungarian music](./HU_plots.png)
+![Number of Download of Hungarian music](./figures/HU_plots.png)
 
 Graphs indicate that the download number of both categories follow a lognormal distribution. To better visualize the comparison between the two distributions, the overlay of the two logarithmic histograms were plotted:
 
@@ -97,7 +97,7 @@ Log_HU <- log(TorrentData[ TorrentData$Nationality == "HU", "Downloaded"])
 source("Dualhist.R")
 PlotDualHist(vector1=Log_EN, vector2=Log_HU, filename="dualhist")
 ```
-![Overlayed histograms of the log(download) values](./dualhist.png)
+![Overlayed histograms of the log(download) values](./figures/dualhist.png)
 
 Taken together, I have shown that there is a significant preference for Hungarian music among torrents.
 
@@ -128,7 +128,7 @@ If there is a gap between the IDs of two adjacent music torrents that could mean
 
 The detailed list of commands used for the analysis are listed in the file `HalfLifeCalculations.R`, custom functions used are in the `HalfLifeFunctions.R` file.
 
-![Half life calculations](./halflife.png)
+![Half life calculations](./figures/halflife.png)
 
 Based on the fitted exponentials, the half-life of torrent files of English music is little less than a year, while torrents of Hungarian music live approximately 20 times longer. However, it is important to note, that the estimation of the half-life of Hungarian music is less reliable caused by the much smaller number of torrents.
 
