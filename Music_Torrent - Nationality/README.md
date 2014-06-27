@@ -48,7 +48,6 @@ SubsetTable$Downloaded  <- as.numeric(as.character(SubsetTable$Downloaded))
 SubsetTable             <- SubsetTable[SubsetTable$Nationality == 'EN' | SubsetTable$Nationality == 'HU',]
 SubsetTable$Nationality <- factor(SubsetTable$Nationality)
 
-
 source("smallfunctions.R")
 SumTable(SubsetTable, "Nationality", "Downloaded") # Function is in the smallfunctions.R source file
 ```
@@ -59,15 +58,21 @@ SumTable(SubsetTable, "Nationality", "Downloaded") # Function is in the smallfun
 |  HU  |  9636  |  13256411  |  1375.717  |  689  |
 
 
-### Distribution of downloads
+### Distribution of the number of downloads
 
 As the table shows, the distribution of the downloads are extremely right-skewed, with a few very popular music and a lot of others with only a few downloads. This is exactly what we see on the boxplot:
 
 ![Boxplot](http://www.kephost.com/images/2014/05/26/NatBoxplot.png)
 
-This extreme skewedness imply that the distribution of the number of downloads might follow a lognormal distribution. To test this hypothesis, I  checked if the distribution of the logarithm of the downloads follows normal distribution using a normal QQ probability plot.
+This extreme skewedness implies that the distribution of the number of downloads might follow a lognormal distribution. To test this hypothesis, I  checked if the distribution of the logarithm of the downloads follows normal distribution.
 
-For international music torrents:
+**The major steps of this analysis:**
+* Generation of a linear raw histogram (inset: different binsize applied to show distribution at a higher resolution).
+* Calculation of natural logarithm of the number of downloads, from which a new histogram was created.
+* Fitting normal distribution to obtain the mean and the variance.
+* To test how well the data follows the normal distribution, a normal QQ probability plot was used.
+
+**For international music torrents:**
 
 ```R
 source("Plots.R")
@@ -75,7 +80,7 @@ tripleplot(TorrentData[ TorrentData$Nationality == "EN", "Downloaded"])
 ```
 ![Number of Download of international music](./EN_plots.png)
 
-For Hungarian music torrents:
+**For Hungarian music torrents:**
 
 ```R
 source("Plots.R")
