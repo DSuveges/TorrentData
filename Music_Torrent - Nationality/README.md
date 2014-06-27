@@ -101,7 +101,7 @@ PlotDualHist(vector1=Log_EN, vector2=Log_HU, filename="dualhist")
 
 ### Half life of music torrents
 
-Torrents over time lose their popularity. Sooner or later no one will download and after a while, seeders will also disconect and the finally the torrent will be completely abandoned. The administrators of the torrent tracker deletes these inactive or so called dead torrents. The aim of this analysis was to calculate the "half-life"  of Hungarian and international music torrents, as besides the download number, the halflife of torrents could also be informative about the popularity.
+Torrents over time lose their popularity. Sooner or later, no one will download and after a while, seeders will also disconect so finally, the torrent will be completely abandoned. The administrators of the torrent tracker deletes these inactive or so called "dead" torrents. The aim of this analysis was to calculate the "half-life"  of Hungarian and international music torrents, as besides the download number, the halflife of torrents could also be informative about the popularity.
 
 #### Theory behind the half life calculation:
 
@@ -114,16 +114,25 @@ If there is a gap between the IDs of two adjacent music torrent that could mean 
 **The half-life calculation based on the following assumption:**
 * The frequency of music torrents within the total torrent population was roughly the same over time.
 * "Natural" cause of torrent death: only insignificant amount of torrents are deleted due to violation of rules.
-* The rate of new torrent release is not have to be constant.
+* Though the rate of new torrent release is not have to be constant, the user activity is expected to be approximately even over time.
 
 #### We used the following method to calculate half life:
 
-1. The set number of music torrents will be divided into subsequent set of k torrents
-2. We define the frequency of still "living" music torrents within the subset: the number of torrents within the subset is divided by the number of total uploaded torrents within that period of time given by the difference between the first and the last torrent ID in the subset.
+1. Torrents are divided into smaller sized groups (500 torrents/groups)
+2. **We calulate the frequency of still "living" music torrents within the subset:** the number of torrents within the subset is divided by the difference between the first and the last torrent ID in the subset (that corresponds to the number of total uploaded torrents during that period).
 3. We calculate the median age of the torrents within the group. (reference day is the upload date of the newest torrent)
-4. Plot ratio of living music torrents as a function of age. - I am expecting to see a set of point with a decreasing ratio and follows an exponential decay fashion.
-5. The parameters of the fitted exponential decay curve gives us the half-life of torrents.
+4. **Plot frequence of living torrents as a function of age** - I am expecting to see a set of point with a decreasing value that follows an exponential decay fashion.
+5. The parameters of the fitted exponential decay curve gives us the *decay constant*. Then ln(2) divided by the decay constant gives the half-life (t1/2) of torrents.
+
+The detailed list of command used for the analysis are listed in the file `HalfLifeCalculations.R`, the custom functions used during the calculations are in `half-life.R` file.
+
+(Half life calculations)[./halflife.png]
+
+Based on the fitted exponentials, the half-life of torrent files of international music is little less than a year, torrents of Hungarian music lives approximately 20 times longer. Unfortunately the estimation of half-life of Hungarian music is less reliable caused by the much lower number of torrents.
 
 ### Discussion
 
+Though international music seems to be really overwhelming that is reflected by the higher number torrent files as well, peolpe has a bias towards for Hungarian music, which is indicated by the significantly higher download rate and the longer lifetime of torrent files.
+
+But at the same time, I had to mention that the legal online sources of Hungarian musics are not as well developed as for internationals, directing potential buyers towards the illegal sources like bittorrent. This is especially true for older pieces that are completely impossible to obtain from ANY legal sources except from flea markets or online auctions of used items.
 

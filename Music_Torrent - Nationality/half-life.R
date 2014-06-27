@@ -1,5 +1,13 @@
 # Collection of functions for half-life determination:
 
+# Functions in this script:
+    # 1. TorrentBin: bins time and ID data
+    # 2. get_mean_time: calculates the mean age of torrents in a given bin
+    # 3. generate_window: calculating the ratio of living torrent in a bin
+    # 4. remove_outliers:
+    # 5. HalfLifePlot:
+
+
 # Calculation of how the ratio of the torrents decrease over time
 # input table: 2D data frame with the Torrent ID and the upload date
 # Window: number of torrents pooled together to get distance and time information
@@ -68,3 +76,4 @@ remove_outliers <- function(x, na.rm = TRUE, ...) {
     y[x > (qnt[2] + H)] <- NA
     y
 }
+
