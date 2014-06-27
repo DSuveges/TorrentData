@@ -3,23 +3,18 @@ Analysis of music torrents
 
 ## Motivation
 
-In this analysis, I wanted to characterize the user preferences of a Hungarian torrent community. In this section I will show that users are significantly biased based on the nationality of the music they download. It is often considered to be a big problem that the presence of international (mostly American) music is so overwhelming, that Hungarians are no longer interested in the national musicians' art. However, download data and the half-life of torrents show that users are likely prefer Hungarian music.
+In this analysis, I wanted to characterize the user preferences of the torrent community. In this section I will show that users are significantly biased based on the nationality of the music they download. It is often considered to be a big problem that the presence of international (mostly American) music is so overwhelming, that Hungarians are no longer interested in the national musicians' art. However, download data and the half-life of torrents show that users are likely prefer Hungarian music.
 
 However I used Perl to download torrent data, I decided to do the analysis in R/RStudio as it made the analyis much easier and gave a excellent opportunity to familiarize myself with this language.
 
 ## The data:
 
-To download music torrent data form the the torrent tracker we used the download Perl script listed in the Download folder with the following query parameters: ``. The saved csv file contain the following variables for each torrents:
+To download music torrent data form the the torrent tracker we used the download Perl script listed in the Download folder with the following query parameters: `mp3_hun,mp3,lossless_hun,lossless`. From the saved csv file the following variables for each torrents were used for the present analysis:
 
 * **ID** - Identifier of the torrent
-* **Name** - Name of the music
-* **U_time** - upload time
 * **U_date** - upload date
 * **Downloads** - Number of downloads
-* **Leechers** - Number of leechers
-* **Seeders** - Number of seeders
 * **Nationality** - Nationality of the music, has two values: *HU*: Hungarian and *EN*: international (mainly english/american) music
-* **genre** - The genre of the music
 
 ## The analysis
 
