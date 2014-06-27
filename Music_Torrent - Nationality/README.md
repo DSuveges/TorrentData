@@ -126,7 +126,7 @@ If there is a gap between the IDs of two adjacent music torrent that could mean 
 
 The detailed list of command used for the analysis are listed in the file `HalfLifeCalculations.R`, the custom functions used during the calculations are in `half-life.R` file.
 
-(Half life calculations)[./halflife.png]
+![Half life calculations](./halflife.png)
 
 Based on the fitted exponentials, the half-life of torrent files of international music is little less than a year, torrents of Hungarian music lives approximately 20 times longer. Unfortunately the estimation of half-life of Hungarian music is less reliable caused by the much lower number of torrents.
 

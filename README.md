@@ -16,10 +16,10 @@ The following information was saved in a csv file: torrent ID, the name of the t
 
 ## Folders:
 
-**Torrent_download:** the series of perls scripts and packages that I used to scrape torrent datasheets. See link for more information about the methods.
+* **Torrent_download:** the series of perls scripts and packages that I used to scrape torrent datasheets. See link for more information about the methods.
 
-**Music_torrent_analysis:** The data analysis of the music torrents. In the case of these torrents I was focusing on the differences in the download preferences between Hungarian and international music. And the user preferences for different genres.
+* **Music_torrent_analysis:** The data analysis of the music torrents. In the case of these torrents I was focusing on the differences in the download preferences between Hungarian and international music. And the user preferences for different genres.
 
-**Movies:** The anaysis of movie torrents are still under development. I'm planning to
+* **Movies:** The anaysis of movie torrents are still under development. I'm planning to
 
 
