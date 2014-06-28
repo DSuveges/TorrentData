@@ -169,8 +169,35 @@ To get a qualitative overview how the number of torrents and downloads are distr
 
 ![Treemap of music genres](./figure/treemap_.png)
 
-This visulaization already indicates that the highest number of torrents not necessarely yields the highest number of downloads. As we can see, while the most frequently uploaded genres belong to the **Electronic** category, the most frequently downloaded torrents belong to **rock**.
+This visulaization already indicates that the highest number of torrents not necessarely yields the highest number of downloads. As we can see, while the most frequently uploaded genres belong to the **Electronic** category, the most frequently downloaded torrents belong to **rock**. (The colors of the genres are kept constant for the better comparability)
 
 And there are genres that has a lot of downloads although the low number of torrents. To further amplify these differences, the average download number of a given genre was calculated. And to get a really comparative view of the genre usage, I created a barchart:
 
 ![Barplot of torrent genre usage](./figure/barplot_color.png)
+
+
+
+
+### Files in the folder:
+
+**R scripts:**
+* **coloring.R**
+*
+
+**Perl scripts:**
+* **genre_reader.pl** - Reads source csv datafile and extracts genre information and saves in a more digestable format.
+* **Tag_cleaner.pl** - This script applied the developed mask.
+* **Top200_representativeness.pl** - Calculates how many of the torrents are represented by the top 200 genres.
+
+**Data files:**
+* **torrent_data_NoTitle.csv** - Source datafile with all torrent information.
+* **genres_raw.csv** - The raw list of assigned genres and the torrent IDs.
+* **top200genres.txt** - List of the 200 most frequently used genres, generated during the analyis.
+* **genres_clean_final.csv** - List of the masked genre list assigned for all torrent IDs.
+* **uncovered.csv** - Genres that are not covered by the mask.
+* **mask_definitions** - List with the mask applied.
+
+**Documentation:**
+* **Readme.md** - this file
+* **genres.Rmd** - R markdown documentation, can be translated to html file.
+
