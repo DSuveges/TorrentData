@@ -176,8 +176,6 @@ And there are genres that has a lot of downloads although the low number of torr
 ![Barplot of torrent genre usage](./figure/barplot_color.png)
 
 
-
-
 ### Files in the folder:
 
 **R scripts:**
