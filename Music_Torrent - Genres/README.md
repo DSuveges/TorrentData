@@ -165,4 +165,12 @@ source("coloring.R")
 GenreDf$colors<-coloring(GenreDf, level_1="categories", level_2="genres", values="Count", scale=F)
 ```
 
-To get a qualitative overview of the torrent distribution among main categories and further genres, I used **treemap** which is especially useful to visualize hierarchical data, where the area of a category (*leaf*) is proportional to its relative value, and these areas are further grouped . This visualization allows a hierarchical representation where subbranched categories are 
+To get a qualitative overview how the number of torrents and downloads are distributed among main categories and further genres, I used **treemap** which is especially useful to visualize hierarchical data, where the area of a category (*leaf*) is proportional to its relative value, and these areas are further grouped.
+
+![Treemap of music genres](./figure/treemap_.png)
+
+This visulaization already indicates that the highest number of torrents not necessarely yields the highest number of downloads. As we can see, while the most frequently uploaded genres belong to the **Electronic** category, the most frequently downloaded torrents belong to **rock**.
+
+And there are genres that has a lot of downloads although the low number of torrents. To further amplify these differences, the average download number of a given genre was calculated. And to get a really comparative view of the genre usage, I created a barchart:
+
+![Barplot of torrent genre usage](./figure/barplot_color.png)
