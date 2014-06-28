@@ -181,8 +181,8 @@ And there are genres that has a lot of downloads although the low number of torr
 ### Files in the folder:
 
 **R scripts:**
-* **coloring.R**
-*
+* **coloring.R** - Assign color gradient to the values of dataframe based on their value and the category
+* **triple_barchart.R** - Plots triple barchar with torrent counts, downloads and ratio.
 
 **Perl scripts:**
 * **genre_reader.pl** - Reads source csv datafile and extracts genre information and saves in a more digestable format.
