@@ -175,6 +175,11 @@ And there are genres that has a lot of downloads although the low number of torr
 
 ![Barplot of torrent genre usage](./figure/barplot_color.png)
 
+We can see, some genres has very high average download number, though only a small number of torrents are available. Two of these genres are marked with red asterixs:
+1. In the rock category, the genre called **nemzeti** refers to a special kind of rock music whose lyrics has a nationalistic atmosphere. (like some kind of American country music)
+2. In the other category, the genre called **mulatos** refers to a special Hungarian kind of music that does not similar to any other genres.
+
+Music pieces belonging to these genres are fullfilling a special need of a relatively narrow audience. The uniqueness of these genres makes it sure that 
 
 ### Files in the folder:
 
