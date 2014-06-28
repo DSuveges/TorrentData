@@ -79,12 +79,11 @@ The 100 most commonly used genres cover 90% of the total torrent population, and
 Usage frequency of the top 100 genres:
 ```{r fig}
 dev.new()
-pdf("Top200barplot.pdf", height=6, width=5)
-barplot(genre_table[1:200],
+pdf("Cleanedbarplot.pdf", height=6, width=5)
+barplot(genre_table,
         names.arg="", 
-        xlab="Top200 most frequently used genres", 
-        ylab="Times a genre was used",
-    )
+        xlab="Cleaned genre definitions", 
+        ylab="Times a genre was used")
 dev.off()
 ```
 
@@ -109,7 +108,15 @@ writeLines(report)
 CleanGenre    <- read.csv("genres_clean_final.csv", header=T)
 ```
 
+**Output:**
+> Non-covered genres: 7939 (5%)
+> Covered, but non-valid genres: 13659 (9%)
+> Valid genres: 123745 (85%)
+> Torrents with at least one valid genre mask: 67852 (92%)
+
 According to the report, most of the genre definitions are masked (95%) and most of the masked genres (85%) were associated to any of the valid genre definitions. The valid genre definitions efficiently cover the torrent population, where 92% of torrent files has at least one associated genre definition.
+
+
 
 ```{r pooled}
 genre_table <- sort(table(CleanGenre$genre), decreasing=T)
@@ -188,7 +195,7 @@ To visualize the realtive distribution of different music categories and genres 
 if("treemap" %in% rownames(installed.packages()) == FALSE) {install.packages("treemap")}
 
 library("treemap")
-
+par(mfrow=c(2,1))
 treemap(
     GenreDf,            # dataframe with the data to plot
     index  = c("categories","genres"),  # The nested categories

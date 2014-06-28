@@ -109,7 +109,7 @@ According to the report, most of the genre definitions are masked (95%) and most
 
 ### Step 3. Summarizing genre data:
 
-Summaraizing the number of torrents belonging different genres and the corresponding download number is also not trivial, as torrents often have contradicting genre annotations (In extreme cases, a single torrent can have 15 assigned genres). So I have decided to split both the torrent count and download number between genres. **For example:** if there is a torrent with 120 downloads and three assigned genres, then each genre got 1/3 count and 40 downloads.
+Summaraizing the number of torrents belonging different genres and the corresponding download number was also not challenging, as torrents often have contradicting genre annotations (In extreme cases, a single torrent can have 15 assigned genres). So I have decided to split both the torrent count and download number between genres. **For example:** if there is a torrent with 120 downloads and three assigned genres, then each genre got 1/3 count and 40 downloads.
 
 ```R
 # Creating a restricted dataset to make the process quick, will be removed in the final verision.
@@ -126,22 +126,22 @@ Torrent_df             <- Torrent_df[!is.na(Torrent_df$TorrentID),]
 Torrent_df$Downloaded  <- as.numeric(as.character(Torrent_df$Downloaded)) # set download number numeric
 
 ### Fill dataframe with download number:
-DownloadCount        <- sapply(CleanGenre$ID, function(x) Torrent_df[ Torrent_df$TorrentID == x, "Downloaded"][1])
+DownloadCount     <- sapply(CleanGenre$ID, function(x) Torrent_df[ Torrent_df$TorrentID == x, "Downloaded"][1])
 
 # Extend genre dataframe with the previously calculated data (already normalized to the number of assigned genres):
 CleanGenre$TorrentCount <- 1 / Count
 CleanGenre$Downloads    <- CleanGenre$TorrentCount * DownloadCount
 
 # Genre definitions in the cleaned dataset:
-genres <- names(table(CleanGenre$genre))
-categories <- sapply(genres, function(x) CleanGenre[ CleanGenre$genre == x, "Category"][1])
+genres            <- names(table(CleanGenre$genre))
+categories        <- sapply(genres, function(x) CleanGenre[ CleanGenre$genre == x, "Category"][1])
 
 # Combining all data into a single dataframe:
-GenreDf <- data.frame(genres = genres, categories = categories)
+GenreDf           <- data.frame(genres = genres, categories = categories)
 
 # calculate how many torrents belong to each genre definition:
-TorrentCount  <- sapply(GenreDf$genres, function(x) sum(CleanGenre[ CleanGenre$genre == x, "TorrentCount"]))
-GenreDf$Count <- TorrentCount
+TorrentCount      <- sapply(GenreDf$genres, function(x) sum(CleanGenre[ CleanGenre$genre == x, "TorrentCount"]))
+GenreDf$Count     <- TorrentCount
 
 # calculte how many downloads belong to each genre definition:
 TorrentDownloads  <- sapply(GenreDf$genres, function(x) sum(CleanGenre[ CleanGenre$genre == x, "Downloads"]))
@@ -151,11 +151,18 @@ GenreDf$Downloads <- TorrentDownloads
 GenreDf$averageDownloads <- GenreDf$Downloads / GenreDf$Count
 
 # Sorting dataframe based on category then based on torrent count:
-GenreDf <- GenreDf[ order(GenreDf[,"categories"], GenreDf[,"Count"]),] # Sorting for count
+GenreDf           <- GenreDf[ order(GenreDf[,"categories"], GenreDf[,"Count"]),] # Sorting for count
 
 ```
 
 ### Step 4. Visualization and discussion:
 
-Before visualizing the summary, we assign colors to each genre that makes it easier to identify them on various graphs. There are base colors that are selected for categories then color gradient is generated from the base color to white based on the count of the given genre. (In the coloring function I have implemented a scaled coloring method where the intensity of the assigned color depends on the relative count value. In this case this method is not applicable as generally there is one or two large value with strong color, and a lot of small values with very faint colors.)
+Before visualization, I assigned colors to each genre that makes it easier to identify them on various graphs. There are base colors that are selected for categories then color gradient is generated from the base color to white based on the count of the given genre. (In the coloring function, I have implemented a scaled coloring method where the intensity of the assigned color depends on the relative count value. In this case this method is not applicable as generally there is one or two large value with strong color, and a lot of small values with very faint colors.)
 
+```R
+# At first we assign colors to each genre to get a nice color gradient (R snipplet was developed for this task)
+source("coloring.R")
+GenreDf$colors<-coloring(GenreDf, level_1="categories", level_2="genres", values="Count", scale=F)
+```
+
+To get a qualitative overview of the torrent distribution among main categories and further genres, I used **treemap** which is especially useful to visualize hierarchical data, where the area of a category (*leaf*) is proportional to its relative value, and these areas are further grouped . This visualization allows a hierarchical representation where subbranched categories are 
