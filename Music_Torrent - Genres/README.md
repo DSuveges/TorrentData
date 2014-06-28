@@ -1,9 +1,11 @@
 Ncore music genre analysis
 ========================================================
 
+## Motivation
+
 Earlier this year I saw an excellent google [visualization](http://research.google.com/bigpicture/music/) showing which music genres are still popular from a given date. That graph shows that the poularity of modern rock is shrinking. In a way this is not surprising, as today there are so many different genres for a very diverse audience, so unlike many blogs and sites commenting on that graph, I am not pessimistic about the future of rock. Time will tell which of today's music deserves to have future...
 
-But on the other hand, I started to wonder what users on the biggest Hungarian torrent site are listening. What genres do they prefer? In this project, I analized the distribution of genres and the number of downloads of different genres. The task was difficult, as the genre field of the torrent data sheet is not strictly defined, it is up to the user to fill that field upon uploading, or even they can omit at all. This yield an extremely diverse set of variable with over 2500 separate values.
+But on the other hand, I started to wonder what users on the biggest Hungarian torrent site are listening. What genres do they prefer? In this project, I analized the distribution of genres and the number of downloads of different genres. The task was difficult, as the genre field of the torrent data sheet is not strictly defined, it is up to the user to fill that field upon uploading, or even they can omit at all. This yield an extremely diverse set of variable with over 2200 separate values.
 
 **The analysis can be divided into the following steps:**
 
@@ -44,3 +46,20 @@ cat("Number of torrent files:", TorrentNumber,
     "\nNumber of different genre definitions:", raw_genre_difinitions,
     "\nNumber of torrents without genre definition:", UnAssignedTorrents, "(", UnAssignedRatio, "% of the total torrent population)\n")
 ```
+**Output:**
+> Number of torrent files: 70282
+> Number of assigned genres: 142248
+> Number of different genre definitions: 2279
+> Number of torrents without genre definition: 2684 ( 3.82 % of the total torrent population)
+
+Based on the generated report, users assigned over 140 thousand genres to 70 thousand uploaded music, and only 4% of the music had no genre assigned. The variability of the genre definitions is unimaginable: more than 2200 definitions were used!
+
+### Step 2. Cleaning genre list
+
+To make the genre definition list more concise, with the combination of Perl scripts and R commands, I constructed a genre mask set to fix the most frequently made typo-s and inconsistent defintions. In this process, I selected the first 100 most commonly used genres and manually processed them to get rid of non-meaningful words and typos. I also pooled closely related genres like "nordic metal" and "viking metal". Then I repeated this process where newer and newer definitions come up to the top 100.
+
+#### Step 2/a: the most frequently used 100 genres
+
+The most frequently used 100 genres cover 86% of the total torrent population while 
+
+To characterize the homogeneity and representativeness of the initial definition set, I calculated the ratio of torrents represented by the most frequently used 100 genres.
