@@ -6,7 +6,7 @@ use warnings;
 use strict;
 use List::Compare;
 
-my $genrelistfile   = "top100genres.txt";
+my $genrelistfile   = "top200genres.txt";
 my $torrents        = "genres_raw.csv";
 
 # Step 1. read top100 genres:

@@ -61,16 +61,16 @@ To characterize the homogeneity and representativeness of the initial definition
 ```{r cleaning_1}
 genre_table        <- table(raw_genres$Genre)
 genre_table        <- sort(genre_table, decreasing=T)
-top100_genre       <- labels(genre_table[1:100])[[1]]
-Top100_genre_count <- sum(genre_table[1:100])
+top200_genre       <- labels(genre_table[1:200])[[1]]
+Top200_genre_count <- sum(genre_table[1:200])
 All_genre_count    <- sum(genre_table)
-Top100_genre_ratio <- round(Top100_genre_count / All_genre_count * 100, digits=1)
+Top200_genre_ratio <- round(Top200_genre_count / All_genre_count * 100, digits=1)
 
-write(top100_genre, "top100genres.txt", sep=" ")
+write(top200_genre, "./top200genres.txt", sep=" ")
 returned           <- system2("./Top100_representativeness.pl", stdout=TRUE) 
 
-cat("Most frequently used 100 genre definitions:\n", top100_genre)
-cat("TOP100 genre definitions covers",Top100_genre_ratio, "percent of all genre annotations.")
+cat("Most frequently used 100 genre definitions:\n", top200_genre)
+cat("TOP200 genre definitions covers",Top200_genre_ratio, "percent of all genre annotations.")
 writeLines(returned)
 ```
 
@@ -78,10 +78,14 @@ The 100 most commonly used genres cover 90% of the total torrent population, and
 
 Usage frequency of the top 100 genres:
 ```{r fig}
-barplot(genre_table[1:100],
+dev.new()
+pdf("Top200barplot.pdf", height=6, width=5)
+barplot(genre_table[1:200],
         names.arg="", 
-        xlab="Top100 most frequently used genres", 
-        ylab="Times a genre was used")
+        xlab="Top200 most frequently used genres", 
+        ylab="Times a genre was used",
+    )
+dev.off()
 ```
 
 The graph shows that there are only a few very frequently used genres, and most genres in the Top100 are already quite rare. So the Top 100 definition quite well covers the dataset, though 100 definition is still too many to visualize and it also has incosistentencies. In the following section I show the result of the optimization.
