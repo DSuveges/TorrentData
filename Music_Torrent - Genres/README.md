@@ -47,10 +47,10 @@ cat("Number of torrent files:", TorrentNumber,
     "\nNumber of torrents without genre definition:", UnAssignedTorrents, "(", UnAssignedRatio, "% of the total torrent population)\n")
 ```
 **Output:**
-> Number of torrent files: 70282
-> Number of assigned genres: 142248
-> Number of different genre definitions: 2279
-> Number of torrents without genre definition: 2684 ( 3.82 % of the total torrent population)
+> Number of torrent files: 70282<br />
+> Number of assigned genres: 142248<br />
+> Number of different genre definitions: 2279<br />
+> Number of torrents without genre definition: 2684 (3.82% of the total torrent population)<br />
 
 Based on the generated report, users assigned over 140,000 genres to 70,000 uploaded music, and only 4% of the music had no genre assigned. The variability of the genre definitions seems unrealisticly high with more than 2,200 definitions!
 
@@ -180,7 +180,7 @@ Music pieces belonging to these genres are fullfilling a special need of a relat
 ### Files in the folder:
 
 **R scripts:**
-* **coloring.R** - Assign color gradient to the values of dataframe based on their value and the category
+* **coloring.R** - Assign color gradient to the values of dataframe based on their value and the category.
 * **triple_barchart.R** - Plots triple barchar with torrent counts, downloads and ratio.
 
 **Perl scripts:**
