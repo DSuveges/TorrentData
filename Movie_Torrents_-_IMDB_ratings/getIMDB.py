@@ -33,7 +33,6 @@ def IMDB_parse(ID):
         return(["NaN","NaN","NaN","NaN"])
         
     rating      = tree.xpath('//span[@itemprop="ratingValue"]/text()')
-    #releaseDate = tree.xpath('//div[@class="txt-block"][h4="Release Date:"]/text()')
     budget      = tree.xpath('//div[h4="Budget:"]/text()')
     country     = tree.xpath('//div[@class="txt-block"][h4="Country:"]/a/text()')
     
